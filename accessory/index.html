@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="css/global.css">
 
 </head>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
  
 <body>
 <h1>Car Accessories</h1>
@@ -51,41 +52,47 @@
 </tfoot>    
 </table>
  
-    <script>
-        var grossPrice = 0;
-        function addToProductList() {
-            var accessorySelect = document.getElementById("accessory");
-            var accessoryOption = accessorySelect.options[accessorySelect.selectedIndex];
-            var accessoryName = accessoryOption.text;
-            var accessoryPrice = parseFloat(accessoryOption.value);
-            var amountInput = document.getElementById("amount");
-            var amount = parseInt(amountInput.value);
- 
-            var productListBody = document.getElementById("productList").getElementsByTagName('tbody')[0];
-            var newRow = productListBody.insertRow();
- 
-            var accessoryCell = newRow.insertCell(0);
-            var amountCell = newRow.insertCell(1);
-            var priceCell = newRow.insertCell(2);
- 
-            accessoryCell.innerHTML = accessoryName;
-            amountCell.innerHTML = amount;
-            priceCell.innerHTML = accessoryPrice * amount;
- 
-            // Update the total price
-            grossPrice += accessoryPrice * amount;
-            document.getElementById("grossPrice").innerHTML = grossPrice.toFixed(2);
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var grossPrice = 0;
 
-            var vatRate = 0.07; // 7% VAT rate
+    function addToProductList() {
+        var accessorySelect = $("#accessory");
+        var accessoryOption = accessorySelect.find("option:selected");
+        var accessoryName = accessoryOption.text();
+        var accessoryPrice = parseFloat(accessoryOption.val());
+        var amount = parseInt($("#amount").val());
 
-            var vatAmount = grossPrice * vatRate;
-            document.getElementById("vatAmount").innerHTML = vatAmount.toFixed(2);
+        var productListBody = $("#productList tbody");
+        var newRow = $("<tr></tr>");
 
-            var netAmount = grossPrice + vatAmount;
-            document.getElementById("netAmount").innerHTML = netAmount.toFixed(2);
+        var accessoryCell = $("<td></td>").text(accessoryName);
+        var amountCell = $("<td></td>").text(amount);
+        var priceCell = $("<td></td>").text((accessoryPrice * amount).toFixed(2));
 
-        }
+        newRow.append(accessoryCell);
+        newRow.append(amountCell);
+        newRow.append(priceCell);
+        productListBody.append(newRow);
+
+        // Update the total price
+        grossPrice += accessoryPrice * amount;
+        $("#grossPrice").text(grossPrice.toFixed(2));
+
+        var vatRate = 0.07; // 7% VAT rate
+
+        var vatAmount = grossPrice * vatRate;
+        $("#vatAmount").text(vatAmount.toFixed(2));
+
+        var netAmount = grossPrice + vatAmount;
+        $("#netAmount").text(netAmount.toFixed(2));
+    }
+
+    $(document).ready(function() {
+        $("#addButton").on("click", addToProductList);
+    });
 </script>
+
 </body>
  
 </html>
