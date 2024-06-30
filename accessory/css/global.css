@@ -1,0 +1,18 @@
+
+table {
+    width: 50vw;
+    
+    background-color: #f8f8f8;
+}
+
+table tr:nth-child(even) {
+    background-color: #c6e1fa;
+}
+
+table tr:nth-child(odd) {
+    background-color: #ffffffdf;
+}
+
+table tfoot {
+    font-weight: bold;
+}
