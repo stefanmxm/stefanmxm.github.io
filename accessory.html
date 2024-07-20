@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Sample Quotation</title>
+    <meta name="description" content="Company quotation">
+    <meta name="author" content="SitePoint">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <h2>INNOVITAL</h2>
+                <p>
+                    Bangsaothong<br>
+                    Samutprakan<br>
+                    THAILAND<br>
+                    10560<br>
+                    <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>: 0924634577<br>
+                    <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>: 0862553569
+                </p>
+            </div>
+            <div class="col-sm-6"></div>
+            <div class="col-sm-3 text-center">
+                <h1>QUOTATION</h1>
+                <img src="img/quotation_image.jpeg" style="width:100px;height:100px;">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <h3>Customer:</h3>
+                <b>Ben </b><br>
+                Address: No.13<br>
+                Samut Prakan<br>
+                Thailand
+            </div>
+            <div class="col-sm-4">
+                <h3>Ship to:</h3>
+                <b>Ben</b><br>
+                Address: No.13<br>
+                Samut Prakan<br>
+                Thailand
+            </div>
+            <div class="col-sm-4">
+                <h4 id="quotationDate">2010/7/27</h4>
+            </div>
+        </div>
+    </div>
+
+    <p class="thick" style="text-align: center;">
+        Currency Dollar
+        <span class="tab">No.: A000000</span>
+        <span style="float:left;">Page No. 2</span>
+    </p>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAccessoryModal">Add Accessory</button>
+
+    <table id="productList" class="table mt-3">
+        <thead>
+            <tr>
+                <th>Accessory</th>
+                <th>Amount</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Gross Price:</td>
+                <td id="GrossPrice">0</td>
+            </tr>
+            <tr>
+                <td colspan="3">VAT Amount (7%):</td>
+                <td id="vatAmount">0</td>
+            </tr>
+            <tr>
+                <td colspan="3">Total Amount:</td>
+                <td id="netAmount">0</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addAccessoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Accessory</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="accessoryForm">
+                        <div class="form-group">
+                            <label for="accessory">Select an accessory:</label>
+                            <select id="accessory" class="form-control">
+                                <option value="100">Car Cover</option>
+                                <option value="200">Floor Mats</option>
+                                <option value="30">Seat Covers</option>
+                                <option value="40">Phone Holder</option>
+                                <option value="50">Car Fragrance</option>
+                                <option value="60">USB Car Adapter</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Amount:</label>
+                            <input type="number" id="amount" class="form-control" min="1" value="1">
+                        </div>
+                        <button type="button" class="btn btn-primary" id="addButton">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+        integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <script>
+        var GrossPrice = 0;
+
+        function addToProductList() {
+            var accessoryOption = $("#accessory option:selected");
+            var accessoryName = accessoryOption.text();
+            var accessoryPrice = parseFloat(accessoryOption.val());
+            var amount = parseInt($("#amount").val());
+
+            var newRow = $("<tr>");
+            newRow.append($("<td>").text(accessoryName));
+            newRow.append($("<td>").text(amount));
+            newRow.append($("<td>").text((accessoryPrice * amount).toFixed(2)));
+            newRow.append($("<td>").html('<button class="btn btn-danger btn-sm deleteButton">Delete</button>'));
+
+            $("#productList tbody").append(newRow);
+
+            GrossPrice += accessoryPrice * amount;
+            updatePrices();
+
+            $('#addAccessoryModal').modal('hide');
+        }
+
+        function updatePrices() {
+            var vatRate = 0.07;
+            var vatAmount = GrossPrice * vatRate;
+            var netAmount = GrossPrice + vatAmount;
+
+            $("#GrossPrice").text(GrossPrice.toFixed(2));
+            $("#vatAmount").text(vatAmount.toFixed(2));
+            $("#netAmount").text(netAmount.toFixed(2));
+        }
+
+        function deleteFromProductList(row) {
+            var price = parseFloat($(row).find('td:nth-child(3)').text());
+            GrossPrice -= price;
+            updatePrices();
+            $(row).remove();
+        }
+
+        $(document).ready(function () {
+            $("#addButton").on("click", addToProductList);
+            $("#productList").on("click", ".deleteButton", function () {
+                var row = $(this).closest('tr');
+                deleteFromProductList(row);
+            });
+        });
+    </script>
+
+    <p class="cen">
+        <b>Make all checks payable to:</b><br>
+        <i>INNOVITAL</i><br>
+        <b>If you have any question concerning this invoice, call:</b><br>
+        <b>THANK YOU FOR YOUR BUSINESS</b>
+    </p>
+
+    <footer>MYAT MIN PHYO</footer>
+
+</body>
+
+</html>
